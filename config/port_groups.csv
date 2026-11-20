@@ -1,0 +1,52 @@
+portid,portname,iso3,group,note
+port744,Jebel Ali,ARE,uae_core_inside,Main UAE container hub inside the strait
+port2025,Khalifa Port,ARE,uae_core_inside,Abu Dhabi container hub inside the strait
+port306,Dubai,ARE,uae_other_inside,Mina Rashid area
+port5,Abu Dhabi,ARE,uae_other_inside,Mina Zayed
+port72,Sharjah,ARE,uae_other_inside,Port Khalid (Gulf coast)
+port13,Ajman,ARE,uae_other_inside,
+port747,Mina Saqr,ARE,uae_other_inside,Ras Al Khaimah
+port22,Al Hamriyah LPG Terminal,ARE,uae_other_inside,
+port512,Jabal Az Zannah-Ruways,ARE,uae_other_inside,
+port1340,Umm al Qaiwain,ARE,uae_other_inside,
+port2237,Das Island,ARE,uae_other_inside,Offshore oil and gas
+port2236,Jebel Dhanna,ARE,uae_other_inside,Oil terminal
+port2235,Zirku Island,ARE,uae_other_inside,Offshore oil
+port362,Fujairah,ARE,uae_east_outside,Gulf of Oman; dominated by tanker and bunkering calls
+port561,Khor Fakkan,ARE,uae_east_outside,Gulf of Oman container terminal; low counts in PortWatch need checking
+port988,Port of Sohar,OMN,oman_outside,Gulf of Oman
+port746,Salalah,OMN,oman_outside,Arabian Sea transshipment hub
+port984,Duqm,OMN,oman_outside,Arabian Sea
+port745,Port Sultan Qaboos,OMN,oman_outside,Muscat
+port1068,Qalhat LNG Terminal,OMN,excluded,LNG export terminal; not a substitution route
+port24,Jubail,SAU,gulf_other_inside,Saudi east coast
+port275,Dammam,SAU,gulf_other_inside,Saudi east coast
+port526,Juaymah,SAU,gulf_other_inside,Saudi east coast crude terminal
+port1091,Ras Tanura,SAU,gulf_other_inside,Saudi east coast crude terminal
+port1089,Ras Al-Khair,SAU,gulf_other_inside,Saudi east coast
+port1090,Ras Laffan,QAT,gulf_other_inside,LNG
+port2026,Hamad Port,QAT,gulf_other_inside,
+port1342,Doha-Umm Said,QAT,gulf_other_inside,
+port1117,Al Ruwais,QAT,gulf_other_inside,
+port2067,Shuaiba,KWT,gulf_other_inside,
+port25,Shuwaikh,KWT,gulf_other_inside,
+port743,Mina Al Ahmadi,KWT,gulf_other_inside,
+port1203,Sitrah,BHR,gulf_other_inside,
+port2060,Mina Salman,BHR,gulf_other_inside,
+port1341,Umm Qasr,IRQ,gulf_other_inside,
+port518,Jeddah,SAU,saudi_red_sea,Red Sea; land bridge to Riyadh
+port2031,King Abdullah Port,SAU,saudi_red_sea,Red Sea
+port570,Yanbu (King Fahd Port),SAU,saudi_red_sea,Red Sea end of the East-West crude pipeline
+port1408,Yanbu (Yanbu city),SAU,saudi_red_sea,Red Sea
+port1081,Rabigh,SAU,saudi_red_sea,Red Sea
+port519,Shoaiba,SAU,saudi_red_sea,Red Sea
+port304,Duba (Port of Neom),SAU,saudi_red_sea,Red Sea
+port305,Duba Bulk Plant Tanker Terminal,SAU,saudi_red_sea,Red Sea
+port777,Mundra,IND,control,Far from both chokepoints
+port776,Mumbai-Jawaharlal Nehru (Nhava Sheva),IND,control,
+port254,Colombo,LKA,control,
+port543,Karachi,PAK,control,
+port775,Muhammad Bin Qasim,PAK,control,
+port1201,Singapore,SGP,control,
+port1065,Busan,KOR,control,
+port1114,Rotterdam,NLD,control,
