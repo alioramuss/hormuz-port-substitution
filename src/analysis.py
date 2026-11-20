@@ -61,6 +61,7 @@ METRICS = {
     "tanker_calls": "Tanker calls per day",
     "other_cargo_calls": "Dry bulk, general cargo and ro-ro calls per day",
     "volume_kt": "Imports plus exports, thousand tonnes per day",
+    "container_kt": "Container cargo (imports plus exports), thousand tonnes per day",
 }
 
 KEY_PORTS = [
@@ -84,6 +85,7 @@ def load():
         df["portcalls_dry_bulk"] + df["portcalls_general_cargo"] + df["portcalls_roro"]
     )
     df["volume_kt"] = (df["import"] + df["export"]) / 1000.0
+    df["container_kt"] = (df["import_container"] + df["export_container"]) / 1000.0
     return df
 
 
@@ -153,7 +155,7 @@ def substitution_table(gtbl):
     return out.sort_values(["phase", "metric"], key=lambda s: s.map(order) if s.name == "phase" else s)
 
 
-def weekly_series(gdaily):
+def weekly_series(gdaily, key="group"):
     """Mean daily value per ISO week, for 2025 and 2026, aligned by week number."""
     d = gdaily.copy()
     d["year"] = d["date"].dt.year
@@ -161,7 +163,7 @@ def weekly_series(gdaily):
     d["week"] = d["date"].dt.isocalendar().week.astype(int)
     d["iso_year"] = d["date"].dt.isocalendar().year.astype(int)
     d = d[d["iso_year"] == d["year"]]
-    wk = d.groupby(["group", "year", "week"]).agg(
+    wk = d.groupby([key, "year", "week"]).agg(
         days=("date", "nunique"), week_start=("date", "min"),
         **{m: (m, "sum") for m in METRICS},
     ).reset_index()
@@ -180,6 +182,70 @@ def data_checks(df):
     ).reset_index()
     chk["days_in_file"] = df.groupby("portid").size().reindex(chk["portid"]).values
     return chk.sort_values(["group", "mean_calls_2025"], ascending=[True, False])
+
+
+def week_phase(week):
+    """Phase of a 2026 ISO week, or None if the week straddles a phase boundary."""
+    from datetime import date
+    days = [pd.Timestamp(date.fromisocalendar(2026, int(week), d)) for d in range(1, 8)]
+    for phase, start, end, _ in PHASES:
+        if all(pd.Timestamp(start) <= x <= pd.Timestamp(end) for x in days):
+            return phase
+    return None
+
+
+def newey_west_se(x, lags=3):
+    """Standard error of the mean of a weekly series, allowing for autocorrelation."""
+    x = np.asarray(x, dtype=float)
+    n = len(x)
+    if n < 2:
+        return np.nan
+    e = x - x.mean()
+    L = min(lags, n - 1)
+    var = e @ e / n
+    for lag in range(1, L + 1):
+        w = 1 - lag / (L + 1)
+        var += 2 * w * (e[lag:] @ e[:-lag]) / n
+    return np.sqrt(max(var, 0) / n)
+
+
+def control_adjusted_effects(wk_unit, wk_control, key):
+    """
+    For each unit (port group or port), week and metric:
+        expected_2026 = value_2025 * (control_2026 / control_2025)
+        effect        = value_2026 - expected_2026
+    i.e. the change beyond what the control ports' trend predicts for that
+    week. Weeks are then averaged within each phase, with Newey-West 95% CIs.
+    Weeks that straddle a phase boundary are left out.
+    """
+    c = wk_control.pivot_table(index="week", columns="year", values=list(METRICS))
+    rows = []
+    for unit, w in wk_unit.groupby(key):
+        p = w.pivot_table(index="week", columns="year", values=list(METRICS))
+        weeks = [x for x in p.index if x in c.index and not p.loc[x].isna().any()]
+        for m in METRICS:
+            v25, v26 = p.loc[weeks, (m, 2025)], p.loc[weeks, (m, 2026)]
+            ratio = c.loc[weeks, (m, 2026)] / c.loc[weeks, (m, 2025)]
+            exp26 = v25 * ratio
+            eff = v26 - exp26
+            ph = pd.Series([week_phase(x) for x in weeks], index=weeks)
+            for phase, _, _, label in PHASES:
+                sel = ph[ph == phase].index
+                if len(sel) == 0:
+                    continue
+                mean = eff.loc[sel].mean()
+                se = newey_west_se(eff.loc[sel].values)
+                rows.append({
+                    key: unit, "metric": m, "phase": phase, "phase_label": label,
+                    "n_weeks": len(sel),
+                    "actual_2026": v26.loc[sel].mean(),
+                    "expected_2026": exp26.loc[sel].mean(),
+                    "effect": mean,
+                    "ci_low": mean - 1.96 * se, "ci_high": mean + 1.96 * se,
+                    "effect_pct": 100 * eff.loc[sel].sum() / exp26.loc[sel].sum()
+                    if exp26.loc[sel].sum() else np.nan,
+                })
+    return pd.DataFrame(rows)
 
 
 # ---------------------------------------------------------------- figures
@@ -264,6 +330,48 @@ def fig_container_shift(gtbl):
     plt.close(fig)
 
 
+def fig_effects(eff):
+    """Control-adjusted change by group and phase, container calls and container tonnes."""
+    groups = ["uae_core_inside", "uae_other_inside", "uae_east_outside", "oman_outside", "saudi_red_sea"]
+    short = {"uae_core_inside": "Jebel Ali + Khalifa", "uae_other_inside": "Other UAE Gulf",
+             "uae_east_outside": "Fujairah + Khor Fakkan", "oman_outside": "Oman",
+             "saudi_red_sea": "Saudi Red Sea"}
+    phases = [("closure", "Closure", "#2a78d6"), ("mou", "MoU window", "#eb6834"),
+              ("renewed", "Renewed disruption", "#1baf7a")]
+    metrics = [("container_calls", "Container ship calls per day"),
+               ("container_kt", "Container cargo, thousand tonnes per day")]
+    fig, axes = plt.subplots(1, 2, figsize=(11, 4.8), sharey=True)
+    for ax, (m, mlabel) in zip(axes, metrics):
+        for j, (ph, plabel, col) in enumerate(phases):
+            for i, g in enumerate(groups):
+                r = eff[(eff["group"] == g) & (eff["metric"] == m) & (eff["phase"] == ph)]
+                if r.empty:
+                    continue
+                r = r.iloc[0]
+                y = i + (j - 1) * 0.24
+                ax.plot([r["ci_low"], r["ci_high"]], [y, y], color=col, lw=2, alpha=0.55)
+                ax.plot(r["effect"], y, "o", color=col, ms=6, mec="#fcfcfb", mew=1.5,
+                        label=plabel if i == 0 else None)
+        ax.axvline(0, color="#c3c2b7", lw=1)
+        ax.set_yticks(range(len(groups)), [short[g] for g in groups], fontsize=8.5, color=INK2)
+        ax.set_title(mlabel, fontsize=9.5, color=INK, loc="left")
+        ax.xaxis.grid(True, color=GRID, linewidth=0.8)
+        ax.yaxis.grid(False)
+        for s in ["top", "right", "left"]:
+            ax.spines[s].set_visible(False)
+        ax.spines["bottom"].set_color("#c3c2b7")
+        ax.tick_params(colors=MUTED, labelsize=8, length=0)
+    axes[0].invert_yaxis()  # shared y axis: invert once only
+    axes[0].legend(frameon=False, fontsize=8, ncol=3, loc="lower left", bbox_to_anchor=(0, 1.06))
+    fig.suptitle("Change beyond the control-port trend, vs same weeks of 2025 (dots: mean, bars: 95% CI)",
+                 x=0.01, ha="left", fontsize=10.5, color=INK)
+    fig.text(0.01, 0.01, "Source: IMF PortWatch. Weekly effects averaged by phase, Newey-West intervals. "
+             "MoU window has only 3 full weeks.", fontsize=7.5, color=MUTED)
+    fig.tight_layout(rect=(0, 0.03, 1, 0.97))
+    fig.savefig(OUT_F / "control_adjusted_effects.png", dpi=160)
+    plt.close(fig)
+
+
 def main():
     df = load()
     gdaily = daily_by(df, "group")
@@ -286,6 +394,31 @@ def main():
 
     chk = data_checks(df)
     chk.to_csv(OUT_T / "data_checks.csv", index=False)
+
+    wk_control = wk[wk["group"] == "control"]
+    eff = control_adjusted_effects(wk[wk["group"] != "control"], wk_control, "group")
+    eff["group_label"] = eff["group"].map(GROUP_LABEL)
+    eff.to_csv(OUT_T / "control_adjusted_effects_by_group.csv", index=False)
+
+    pwk = weekly_series(pdaily[pdaily["portid"].isin(KEY_PORTS)], key="portid")
+    peff = control_adjusted_effects(pwk, wk_control, "portid").merge(names, on="portid")
+    peff.to_csv(OUT_T / "control_adjusted_effects_by_port.csv", index=False)
+    fig_effects(eff)
+
+    # Substitution shares from the control-adjusted effects
+    pv = eff.pivot_table(index=["phase", "metric"], columns="group", values="effect")
+    sc = pd.DataFrame({
+        "uae_inside": pv["uae_core_inside"] + pv["uae_other_inside"],
+        "uae_east_outside": pv["uae_east_outside"],
+        "oman_outside": pv["oman_outside"],
+        "saudi_red_sea": pv["saudi_red_sea"],
+    })
+    lost = -sc["uae_inside"].where(sc["uae_inside"] < 0)
+    sc["share_offset_uae_east"] = sc["uae_east_outside"] / lost
+    sc["share_offset_uae_east_plus_oman"] = (sc["uae_east_outside"] + sc["oman_outside"]) / lost
+    sc.reset_index().to_csv(OUT_T / "substitution_control_adjusted.csv", index=False)
+    print()
+    print(sc.loc[(slice(None), ["container_calls", "container_kt"]), :].round(3).to_string())
 
     fig_small_multiples(wk, "calls", "weekly_calls_by_group.png",
                         "Port calls per day by port group, 2025 vs 2026")
