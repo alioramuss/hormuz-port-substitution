@@ -43,6 +43,9 @@ GROUP_ORDER = [
     "uae_east_outside",
     "oman_outside",
     "saudi_red_sea",
+    "india",
+    "pakistan",
+    "colombo",
     "control",
 ]
 GROUP_LABEL = {
@@ -52,7 +55,10 @@ GROUP_LABEL = {
     "uae_east_outside": "Fujairah + Khor Fakkan (outside)",
     "oman_outside": "Oman ports (outside)",
     "saudi_red_sea": "Saudi Red Sea ports",
-    "control": "Control ports (India, Pakistan, Sri Lanka, Singapore, Busan, Rotterdam)",
+    "india": "India: Mundra + Nhava Sheva",
+    "pakistan": "Pakistan: Karachi + Port Qasim",
+    "colombo": "Colombo",
+    "control": "Control ports (Singapore, Busan, Rotterdam)",
 }
 
 METRICS = {
@@ -159,7 +165,7 @@ def weekly_series(gdaily, key="group"):
     """Mean daily value per ISO week, for 2025 and 2026, aligned by week number."""
     d = gdaily.copy()
     d["year"] = d["date"].dt.year
-    d = d[d["year"].isin([2025, 2026])]
+    d = d[d["year"].isin([2024, 2025, 2026])]
     d["week"] = d["date"].dt.isocalendar().week.astype(int)
     d["iso_year"] = d["date"].dt.isocalendar().year.astype(int)
     d = d[d["iso_year"] == d["year"]]
@@ -209,10 +215,11 @@ def newey_west_se(x, lags=3):
     return np.sqrt(max(var, 0) / n)
 
 
-def control_adjusted_effects(wk_unit, wk_control, key):
+def control_adjusted_effects(wk_unit, wk_control, key, base=2025):
     """
     For each unit (port group or port), week and metric:
-        expected_2026 = value_2025 * (control_2026 / control_2025)
+        expected_2026 = value_base * (control_2026 / control_base)
+    where base is 2025 by default (2024 for ports with bad 2025 data).
         effect        = value_2026 - expected_2026
     i.e. the change beyond what the control ports' trend predicts for that
     week. Weeks are then averaged within each phase, with Newey-West 95% CIs.
@@ -222,10 +229,12 @@ def control_adjusted_effects(wk_unit, wk_control, key):
     rows = []
     for unit, w in wk_unit.groupby(key):
         p = w.pivot_table(index="week", columns="year", values=list(METRICS))
-        weeks = [x for x in p.index if x in c.index and not p.loc[x].isna().any()]
+        weeks = [x for x in p.index if x in c.index
+                 and not p.loc[x, (slice(None), [base, 2026])].isna().any()
+                 and not c.loc[x, (slice(None), [base, 2026])].isna().any()]
         for m in METRICS:
-            v25, v26 = p.loc[weeks, (m, 2025)], p.loc[weeks, (m, 2026)]
-            ratio = c.loc[weeks, (m, 2026)] / c.loc[weeks, (m, 2025)]
+            v25, v26 = p.loc[weeks, (m, base)], p.loc[weeks, (m, 2026)]
+            ratio = c.loc[weeks, (m, 2026)] / c.loc[weeks, (m, base)]
             exp26 = v25 * ratio
             eff = v26 - exp26
             ph = pd.Series([week_phase(x) for x in weeks], index=weeks)
@@ -237,6 +246,7 @@ def control_adjusted_effects(wk_unit, wk_control, key):
                 se = newey_west_se(eff.loc[sel].values)
                 rows.append({
                     key: unit, "metric": m, "phase": phase, "phase_label": label,
+                    "baseline_year": base,
                     "n_weeks": len(sel),
                     "actual_2026": v26.loc[sel].mean(),
                     "expected_2026": exp26.loc[sel].mean(),
@@ -268,8 +278,9 @@ def style(ax):
 
 def fig_small_multiples(wk, metric, fname, title):
     groups = [g for g in GROUP_ORDER if g != "control"] + ["control"]
-    fig, axes = plt.subplots(4, 2, figsize=(11, 11), sharex=True)
+    fig, axes = plt.subplots(6, 2, figsize=(11, 15), sharex=True)
     axes = axes.ravel()
+    axes[-2].axis("off")
     for ax, g in zip(axes, groups):
         w = wk[wk["group"] == g]
         w25 = w[w["year"] == 2025].set_index("week")[metric]
@@ -279,23 +290,23 @@ def fig_small_multiples(wk, metric, fname, title):
             ax.axvspan(ws - 0.5, we + 0.5, color=PHASE_SHADE[ph], zorder=0, lw=0)
         ax.plot(w25.index, w25.values, color=MUTED, lw=1.5, label="2025")
         ax.plot(w26.index, w26.values, color=BLUE, lw=2, label="2026")
-        ax.set_title(GROUP_LABEL[g].split(" (India")[0], fontsize=9.5, color=INK, loc="left")
+        ax.set_title(GROUP_LABEL[g], fontsize=9.5, color=INK, loc="left")
         ax.set_ylim(bottom=0)
         style(ax)
     axes[-1].axis("off")
     axes[-1].text(0.02, 0.75, "Grey: 2025   Blue: 2026", color=INK2, fontsize=9, transform=axes[-1].transAxes)
     axes[-1].text(0.02, 0.55, "Shaded: closure (1 Mar to 14 Jun)\nand renewed disruption (from 8 Jul)",
                   color=INK2, fontsize=9, transform=axes[-1].transAxes)
-    axes[-1].text(0.02, 0.25, "Source: IMF PortWatch, weekly mean of daily values",
+    axes[-1].text(0.02, 0.25, "Source: IMF PortWatch, weekly mean of daily values.\nIndia's 2025 line has a data gap from May 2025 to Apr 2026.",
                   color=MUTED, fontsize=8, transform=axes[-1].transAxes)
     # Month labels instead of ISO week numbers
     month_weeks = [pd.Timestamp(2026, m, 1).isocalendar().week for m in range(1, 13)]
     month_weeks[0] = 1
-    for ax in axes[:-1]:
+    for ax in axes[:len(groups)]:
         ax.set_xticks(month_weeks, ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"])
         ax.set_xlim(0.5, 52.5)
-    axes[-2].tick_params(labelbottom=True)
-    axes[-3].tick_params(labelbottom=True)
+    axes[len(groups) - 1].tick_params(labelbottom=True)
+    axes[len(groups) - 2].tick_params(labelbottom=True)
     fig.suptitle(title, x=0.06, ha="left", fontsize=12, color=INK)
     fig.tight_layout(rect=(0, 0, 1, 0.97))
     fig.savefig(OUT_F / fname, dpi=160)
@@ -372,6 +383,53 @@ def fig_effects(eff):
     plt.close(fig)
 
 
+def fig_where_cargo_went(eff25, eff24, phase="renewed"):
+    """Control-adjusted change in container cargo outside the strait, one phase."""
+    rows = [
+        ("Fujairah + Khor Fakkan", eff25, "uae_east_outside"),
+        ("Oman ports", eff25, "oman_outside"),
+        ("Saudi Red Sea ports", eff25, "saudi_red_sea"),
+        ("India (vs 2024)", eff24, "india"),
+        ("Pakistan", eff25, "pakistan"),
+        ("Colombo", eff25, "colombo"),
+    ]
+    sel = lambda e, g: e[(e["group"] == g) & (e["metric"] == "container_kt") & (e["phase"] == phase)].iloc[0]
+    lost = sel(eff25, "uae_core_inside")["effect"] + sel(eff25, "uae_other_inside")["effect"]
+    fig, ax = plt.subplots(figsize=(9, 4.2))
+    for i, (label, e, g) in enumerate(rows):
+        r = sel(e, g)
+        ax.plot([r["ci_low"], r["ci_high"]], [i, i], color=BLUE, lw=2.5, alpha=0.5)
+        ax.plot(r["effect"], i, "o", color=BLUE, ms=8, mec="#fcfcfb", mew=1.5)
+        ax.text(max(r["ci_high"], r["effect"]) + 4, i, f"{r['effect']:+.0f}", va="center", fontsize=8.5, color=INK2)
+    ax.axvline(0, color="#c3c2b7", lw=1)
+    ax.set_yticks(range(len(rows)), [r[0] for r in rows], fontsize=9, color=INK2)
+    ax.invert_yaxis()
+    ax.set_xlabel("Change in container cargo beyond control-port trend, thousand tonnes per day", fontsize=8.5, color=INK2)
+    ax.xaxis.grid(True, color=GRID, linewidth=0.8)
+    for sp in ["top", "right", "left"]:
+        ax.spines[sp].set_visible(False)
+    ax.spines["bottom"].set_color("#c3c2b7")
+    ax.tick_params(colors=MUTED, labelsize=8, length=0)
+    label = dict((p[0], p[3]) for p in PHASES)[phase]
+    ax.set_title(f"Where did the container cargo go? {label}, 8 Jul to 13 Nov 2026\n"
+                 f"(UAE ports inside the strait lost about {-lost:.0f} thousand tonnes a day)",
+                 fontsize=10.5, color=INK, loc="left")
+    fig.text(0.01, 0.01, "Source: IMF PortWatch. Dots: mean weekly effect, bars: 95% CI. India compared with 2024 "
+             "because of a PortWatch data gap at Indian ports in 2025.", fontsize=7.2, color=MUTED)
+    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    fig.savefig(OUT_F / "where_container_cargo_went.png", dpi=160)
+    plt.close(fig)
+
+
+def south_asia_check(df):
+    """Monthly calls and container tonnes at the South Asian ports, to show the 2025 data gap."""
+    sa = df[df["group"].isin(["india", "pakistan", "colombo"])].copy()
+    sa["month"] = sa["date"].dt.strftime("%Y-%m")
+    return sa.groupby(["portname", "month"]).agg(
+        calls_per_day=("calls", "mean"), container_kt_per_day=("container_kt", "mean")
+    ).reset_index()
+
+
 def main():
     df = load()
     gdaily = daily_by(df, "group")
@@ -400,6 +458,12 @@ def main():
     eff["group_label"] = eff["group"].map(GROUP_LABEL)
     eff.to_csv(OUT_T / "control_adjusted_effects_by_group.csv", index=False)
 
+    eff24 = control_adjusted_effects(wk[wk["group"] != "control"], wk_control, "group", base=2024)
+    eff24["group_label"] = eff24["group"].map(GROUP_LABEL)
+    eff24.to_csv(OUT_T / "control_adjusted_effects_by_group_vs2024.csv", index=False)
+    south_asia_check(df).to_csv(OUT_T / "south_asia_monthly_check.csv", index=False)
+    fig_where_cargo_went(eff, eff24)
+
     pwk = weekly_series(pdaily[pdaily["portid"].isin(KEY_PORTS)], key="portid")
     peff = control_adjusted_effects(pwk, wk_control, "portid").merge(names, on="portid")
     peff.to_csv(OUT_T / "control_adjusted_effects_by_port.csv", index=False)
@@ -407,15 +471,22 @@ def main():
 
     # Substitution shares from the control-adjusted effects
     pv = eff.pivot_table(index=["phase", "metric"], columns="group", values="effect")
+    pv24 = eff24.pivot_table(index=["phase", "metric"], columns="group", values="effect")
     sc = pd.DataFrame({
         "uae_inside": pv["uae_core_inside"] + pv["uae_other_inside"],
         "uae_east_outside": pv["uae_east_outside"],
         "oman_outside": pv["oman_outside"],
         "saudi_red_sea": pv["saudi_red_sea"],
+        "india_vs2024": pv24["india"],
+        "pakistan": pv["pakistan"],
+        "colombo": pv["colombo"],
     })
     lost = -sc["uae_inside"].where(sc["uae_inside"] < 0)
     sc["share_offset_uae_east"] = sc["uae_east_outside"] / lost
     sc["share_offset_uae_east_plus_oman"] = (sc["uae_east_outside"] + sc["oman_outside"]) / lost
+    sc["share_offset_india_plus_pakistan"] = (sc["india_vs2024"] + sc["pakistan"]) / lost
+    sc["share_offset_all_outside_ex_red_sea"] = (
+        sc["uae_east_outside"] + sc["oman_outside"] + sc["india_vs2024"] + sc["pakistan"] + sc["colombo"]) / lost
     sc.reset_index().to_csv(OUT_T / "substitution_control_adjusted.csv", index=False)
     print()
     print(sc.loc[(slice(None), ["container_calls", "container_kt"]), :].round(3).to_string())

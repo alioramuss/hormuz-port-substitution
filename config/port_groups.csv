@@ -42,11 +42,11 @@ port1081,Rabigh,SAU,saudi_red_sea,Red Sea
 port519,Shoaiba,SAU,saudi_red_sea,Red Sea
 port304,Duba (Port of Neom),SAU,saudi_red_sea,Red Sea
 port305,Duba Bulk Plant Tanker Terminal,SAU,saudi_red_sea,Red Sea
-port777,Mundra,IND,control,Far from both chokepoints
-port776,Mumbai-Jawaharlal Nehru (Nhava Sheva),IND,control,
-port254,Colombo,LKA,control,
-port543,Karachi,PAK,control,
-port775,Muhammad Bin Qasim,PAK,control,
-port1201,Singapore,SGP,control,
+port777,Mundra,IND,india,Possible destination for diverted transshipment; PortWatch call counts have a gap May 2025 to Apr 2026
+port776,Mumbai-Jawaharlal Nehru (Nhava Sheva),IND,india,Possible destination for diverted transshipment; PortWatch call counts have a gap May 2025 to Apr 2026
+port254,Colombo,LKA,colombo,Transshipment hub; possible destination for diverted cargo
+port543,Karachi,PAK,pakistan,Possible destination for diverted transshipment
+port775,Muhammad Bin Qasim,PAK,pakistan,Possible destination for diverted transshipment
+port1201,Singapore,SGP,control,Far from both chokepoints
 port1065,Busan,KOR,control,
 port1114,Rotterdam,NLD,control,

@@ -1,8 +1,20 @@
 # UAE ports inside and outside the Strait of Hormuz during the 2026 disruption
 
-Did port traffic move from the UAE ports inside the strait (Jebel Ali, Khalifa) to ports outside it (Fujairah, Khor Fakkan, Oman, the Saudi Red Sea coast) when Hormuz was closed in 2026? This repo looks at that question using IMF PortWatch daily port data.
+Did port traffic move from the UAE ports inside the strait (Jebel Ali, Khalifa) to ports outside it when Hormuz was closed in 2026, and if not, where did it go? This repo looks at that question using IMF PortWatch daily port data.
 
-Status: second pass, 21 Nov 2026. Numbers will change as the method gets tightened.
+Status: third pass, 22 Nov 2026. Numbers will change as the method gets tightened.
+
+## Headline
+
+Since July, about a fifth of the container cargo lost at the UAE ports inside the strait (roughly 507 thousand tonnes a day) turns up at other ports in PortWatch:
+
+- about 6% at Fujairah and Khor Fakkan,
+- about 11% at Indian and Pakistani ports, consistent with transshipment moving east rather than to the UAE coast,
+- about 5% in Oman, though Oman was already growing faster than the control ports before the war, so this part is weak evidence.
+
+Colombo fell. The Saudi Red Sea ports picked up cargo during the closure but collapsed after the Houthi blockade of Saudi shipping in July.
+
+The real shift to the UAE east coast is probably bigger than PortWatch shows: its numbers for Khor Fakkan look far too low (see below), and ships turning off AIS would hide some traffic. Capacity also limits how much could move there: Gulftainer is expanding Khor Fakkan from 3.5 to 5 million TEU a year.
 
 ## Data
 
@@ -20,13 +32,18 @@ Port groups are in `config/port_groups.csv`:
 | UAE east coast, outside | Fujairah, Khor Fakkan |
 | Oman, outside | Sohar, Salalah, Duqm, Sultan Qaboos |
 | Saudi Red Sea | Jeddah, King Abdullah Port, Yanbu (two), Rabigh, Shoaiba, Duba (two) |
-| Control | Mundra, Nhava Sheva, Colombo, Karachi, Port Qasim, Singapore, Busan, Rotterdam |
+| India | Mundra, Nhava Sheva |
+| Pakistan | Karachi, Port Qasim |
+| Colombo | Colombo |
+| Control | Singapore, Busan, Rotterdam |
 
 Qalhat LNG terminal is pulled but left out, since LNG exports are not a substitution route.
 
+In the first version, the Indian, Pakistani and Sri Lankan ports were part of the control group. They may have received diverted transshipment, which would contaminate the control, so they are now their own groups and the control is only ports far from both chokepoints.
+
 ## Phases
 
-Each 2026 phase is compared with the same calendar dates in 2025.
+Each 2026 phase is compared with the same calendar dates in 2025 (2024 for India, see below).
 
 | Phase | Dates | What happened |
 |---|---|---|
@@ -35,15 +52,7 @@ Each 2026 phase is compared with the same calendar dates in 2025.
 | MoU window | 15 Jun to 7 Jul | US and Iran MoU agreed 15 Jun and signed 17 Jun, traffic partly returns |
 | Renewed disruption | 8 Jul to 13 Nov | Tanker attacks and US strikes from 7 to 8 Jul, Houthi blockade of Saudi shipping from 20 Jul, MoU expired 17 Aug |
 
-## Headline
-
-PortWatch shows a small but clear container shift from the UAE ports inside the strait to the east coast: since July, about 2 extra container calls and about 32 thousand tonnes of container cargo a day at Fujairah and Khor Fakkan, against roughly 520 thousand tonnes a day lost at UAE ports inside. That is about 6% of the lost container cargo (10% counting Oman).
-
-But PortWatch looks to be missing most of Khor Fakkan's traffic (see below), and the terminal operator says it handled 80 to 90% of UAE container demand during the disruption. So the real shift is probably much bigger than PortWatch shows, and sorting out that gap is now the main question.
-
 ## Results 1: simple change vs 2025
-
-Change versus the same dates in 2025:
 
 | Group | Closure | MoU window | Renewed disruption |
 |---|---|---|---|
@@ -54,39 +63,46 @@ Change versus the same dates in 2025:
 | Oman ports, all calls | -6% | +2% | +1% |
 | Saudi Red Sea, all calls | +32% | +64% | -63% |
 | Saudi Red Sea, volume | +84% | +140% | -64% |
-| Control ports, all calls | -4% | +1% | +2% |
+| Pakistan, container cargo | +21% | +45% | +23% |
+| Control ports, all calls | -2% | -3% | -5% |
 
-1. **The inside ports collapsed and have not recovered.** Jebel Ali and Khalifa lost about 90% of their calls in the closure and are still about 80% down in the latest period.
-2. **Container traffic grew at the UAE east coast**, from about 0.3 to about 2 container calls a day. Total calls there still fell, because Fujairah's tanker and bunkering traffic dropped sharply.
-3. **Oman barely moved.** Sohar fell, Salalah rose a little.
-4. **The Saudi Red Sea ports were the biggest outside winner until July.** Volume rose 84% in the closure, mostly crude loading at Yanbu (about 190 to 510 thousand tonnes a day), then collapsed after the Houthis declared a blockade of Saudi shipping on 20 July.
-5. **The control ports are flat**, so none of this is a global shipping trend.
+Total calls at Fujairah and Khor Fakkan fell even as container calls rose, because Fujairah's tanker and bunkering traffic dropped sharply.
 
 ## Results 2: control-adjusted, with confidence intervals
 
-For each port group and week, the expected 2026 value is the 2025 value for the same ISO week scaled by the control ports' 2026/2025 ratio for that week. The effect is actual minus expected. Weekly effects are averaged within each phase, with Newey-West 95% intervals (3 lags). Weeks that straddle a phase boundary are left out, which leaves 7 pre-war weeks, 15 closure weeks, 3 MoU weeks and 17 renewed-disruption weeks. Code: `control_adjusted_effects()` in `src/analysis.py`.
+For each port group and week, the expected 2026 value is the baseline value for the same ISO week scaled by the control ports' 2026/baseline ratio for that week. The effect is actual minus expected. Weekly effects are averaged within each phase, with Newey-West 95% intervals (3 lags). Weeks that straddle a phase boundary are left out, which leaves 7 pre-war weeks, 15 closure weeks, 3 MoU weeks and 17 renewed-disruption weeks. Code: `control_adjusted_effects()` in `src/analysis.py`.
 
 Container cargo, thousand tonnes per day (95% CI in brackets):
 
-| Group | Closure | Renewed disruption |
-|---|---|---|
-| Jebel Ali + Khalifa | -541 (-566 to -515) | -516 (-543 to -490) |
-| Other UAE Gulf ports | -7 (-9 to -5) | -5 (-7 to -3) |
-| Fujairah + Khor Fakkan | +16 (+8 to +24) | +32 (+28 to +35) |
-| Oman ports | -10 (-27 to +7) | +22 (0 to +45) |
-| Saudi Red Sea | +15 (-10 to +40) | -97 (-132 to -61) |
+| Group | Before the war (placebo) | Closure | Renewed disruption |
+|---|---|---|---|
+| Jebel Ali + Khalifa | +23 (-22 to +67) | -536 (-561 to -511) | -502 (-524 to -480) |
+| Other UAE Gulf ports | 0 (-2 to +2) | -7 (-9 to -5) | -5 (-6 to -3) |
+| Fujairah + Khor Fakkan | -3 (-3 to -2) | +16 (+8 to +24) | +32 (+28 to +35) |
+| Oman ports | +24 (+8 to +41) | -9 (-27 to +10) | +26 (+3 to +49) |
+| Saudi Red Sea | -17 (-33 to -2) | +16 (-10 to +43) | -94 (-128 to -59) |
+| India (vs 2024) | +2 (-37 to +40) | +24 (-18 to +66) | +49 (+15 to +84) |
+| Pakistan | 0 (-10 to +10) | +5 (-3 to +12) | +6 (+2 to +10) |
+| Colombo | -5 (-13 to +3) | -3 (-10 to +4) | -9 (-13 to -5) |
 
-Share of the UAE container loss turning up outside the strait:
+Share of the UAE container cargo loss turning up elsewhere:
 
 | | Closure | MoU window | Renewed disruption |
 |---|---|---|---|
-| Fujairah + Khor Fakkan, by container calls | 4% | 7% | 9% |
-| Fujairah + Khor Fakkan, by container tonnes | 3% | 5% | 6% |
-| Plus Oman, by container tonnes | 1% | -4% | 10% |
+| Fujairah + Khor Fakkan | 3% | 5% | 6% |
+| Fujairah + Khor Fakkan + Oman | 1% | -3% | 11% |
+| India + Pakistan | 5% | 13% | 11% |
+| All of the above plus Colombo | 6% | 9% | 20% |
 
-The pre-war weeks act as a placebo test. Effects there are small next to the war effects (for example +8% for Jebel Ali and Khalifa calls against -90% in the closure), though a few are statistically different from zero, so the 2025 baseline is not perfect.
+Saudi Red Sea ports are left out of the shares because most of their change is crude oil, and they collapsed after July for a separate reason.
 
-Tables: `control_adjusted_effects_by_group.csv`, `control_adjusted_effects_by_port.csv`, `substitution_control_adjusted.csv`. Chart: `outputs/figures/control_adjusted_effects.png`.
+The pre-war column is a placebo test: before the war there should be no effect. Most groups pass. Oman does not (+24 before the war), so its later rise is hard to separate from a trend it already had.
+
+Tables: `control_adjusted_effects_by_group.csv`, `control_adjusted_effects_by_group_vs2024.csv`, `control_adjusted_effects_by_port.csv`, `substitution_control_adjusted.csv`. Charts: `outputs/figures/control_adjusted_effects.png`, `outputs/figures/where_container_cargo_went.png`.
+
+## Data gap at the Indian ports
+
+PortWatch call counts at Mundra and Nhava Sheva drop sharply from about May 2025 to April 2026 (Nhava Sheva goes from about 27 calls a day to 7 or 8, then back to about 25 by May 2026), while Nhava Sheva's container tonnes stay steady. That looks like a data problem rather than real traffic, and it makes any comparison with 2025 overstate the 2026 rise. So India is compared with the same weeks of 2024 instead, and judged on container tonnes rather than calls. Its pre-war placebo against 2024 is close to zero. Monthly numbers are in `outputs/tables/south_asia_monthly_check.csv`.
 
 ## Khor Fakkan is probably undercounted
 
@@ -94,22 +110,23 @@ Tables: `control_adjusted_effects_by_group.csv`, `control_adjusted_effects_by_po
 - Lloyd's List puts Khorfakkan/Sharjah throughput at about 2.6 million TEU in 2025. Even if every one of those 77 calls matched the terminal's single-ship record of 19,561 TEU, that would only reach about 1.5 million TEU. So PortWatch is missing most of the container calls there.
 - During the disruption Gulftainer, the operator, estimated it was handling 80 to 90% of UAE container demand, and reported weekly throughput rising from about 8 thousand to 65 thousand TEU. PortWatch shows only about 1 extra container call a day at Khor Fakkan.
 
-Possible reasons: the port boundary in PortWatch may not cover the container berths, or calls there may be assigned to another port or dropped. This needs checking with the PortWatch team before the Khor Fakkan numbers can be trusted. Until then, the substitution shares above are a lower bound.
+The port boundary may be fine and the gap may come from vessels not transmitting AIS, so the Khor Fakkan numbers should not be relied on alone. Until this is resolved, the shares above are a lower bound for the UAE east coast.
 
 ## Caveats
 
-- **AIS gaps.** PortWatch is built from AIS. Ships switching off transponders and GNSS jamming in the Gulf during the war would make the inside ports look emptier than they were. Reporting describes many "dark" transits.
+- **AIS gaps.** PortWatch is built from AIS. Ships switching off transponders and GNSS jamming in the Gulf during the war would make the inside ports look emptier than they were.
 - **Calls are not cargo.** Container tonnes help, but PortWatch estimates tonnes from ship type and draught, not from manifests.
 - **Fujairah is mostly tankers and bunkering,** so its total calls say little about cargo moving there.
 - **Land routes are invisible.** Cargo landed at Khor Fakkan, Fujairah or Sohar and trucked to Dubai shows up only at the port where it landed.
-- **The baseline assumes 2025 was normal,** and the control ports are only a rough stand-in for what would have happened without the war.
+- **The control is small.** Three large ports far from the Gulf stand in for what would have happened without the war.
+- **Some demand simply disappeared.** Not all lost cargo had to go somewhere else.
 - **The MoU window is short** (3 full weeks), so its intervals are less reliable.
 
 ## Next steps
 
-- Ask the PortWatch team how Khor Fakkan is defined, and whether calls there are being missed.
+- Add more control ports (for example Shanghai, Antwerp, Los Angeles) and check the results hold.
+- Check other transshipment hubs that could have taken Gulf cargo, such as Salalah's share by vessel size, Jeddah before July, and East African ports.
 - Compare PortWatch with published monthly throughput for Jebel Ali, Khalifa and Khor Fakkan where available.
-- Check whether Indian west coast ports absorbed transshipment, since they are in the control group now.
 
 ## How to run
 
@@ -132,5 +149,5 @@ py src/analysis.py
 
 - 2025 throughput: Lloyd's List One Hundred Ports, Khorfakkan/Sharjah entry
 - Single-ship record of 19,561 TEU: Gulf News
-- 80 to 90% of UAE container demand: AGBI, July 2026
+- 80 to 90% of UAE container demand, and capacity expansion from 3.5 to 5 million TEU: AGBI, July 2026
 - Weekly throughput 8 thousand to 65 thousand TEU: EnterpriseAM, Oct and Nov 2026
