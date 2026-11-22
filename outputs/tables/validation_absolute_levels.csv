@@ -1,0 +1,57 @@
+entity,measure,period,start,end,official,portwatch,portwatch_to_official,tonnes_per_teu,teu_per_container_call,note
+Saudi ports (Mawani),vessels_total,Jan 2025,2025-01-01,2025-01-31,1141,860,0.7537248028045574,,,Mawani counts every vessel incl. passenger and livestock ships; Jazan and Ras Tanura not included on the PortWatch side
+Saudi ports (Mawani),vessels_total,Jan 2026,2026-01-01,2026-01-31,1121,765,0.6824264049955397,,,Mawani counts every vessel incl. passenger and livestock ships; Jazan and Ras Tanura not included on the PortWatch side
+Saudi ports (Mawani),vessels_total,Feb 2025,2025-02-01,2025-02-28,1225,716,0.5844897959183674,,,Mawani counts every vessel incl. passenger and livestock ships; Jazan and Ras Tanura not included on the PortWatch side
+Saudi ports (Mawani),vessels_total,Feb 2026,2026-02-01,2026-02-28,1385,776,0.5602888086642599,,,Mawani counts every vessel incl. passenger and livestock ships; Jazan and Ras Tanura not included on the PortWatch side
+Saudi ports (Mawani),vessels_total,Apr 2025,2025-04-01,2025-04-30,1386,822,0.5930735930735931,,,Mawani counts every vessel incl. passenger and livestock ships; Jazan and Ras Tanura not included on the PortWatch side
+Saudi ports (Mawani),vessels_total,Apr 2026,2026-04-01,2026-04-30,1192,660,0.5536912751677853,,,Mawani counts every vessel incl. passenger and livestock ships; Jazan and Ras Tanura not included on the PortWatch side
+Saudi ports (Mawani),tonnes_noncontainer,2025,2025-01-01,2025-12-31,242068641,181156139,0.7483668196410456,,,Mawani total cargo is general plus dry bulk plus liquid bulk and excludes containers
+Saudi ports (Mawani),tonnes_noncontainer,Jan 2025,2025-01-01,2025-01-31,19810000,15198516,0.7672143361938415,,,Mawani total cargo is general plus dry bulk plus liquid bulk and excludes containers
+Saudi ports (Mawani),tonnes_noncontainer,Jan 2026,2026-01-01,2026-01-31,19210000,12140351,0.631980791254555,,,Mawani total cargo is general plus dry bulk plus liquid bulk and excludes containers
+Saudi ports (Mawani),tonnes_noncontainer,Feb 2025,2025-02-01,2025-02-28,16618189,13984047,0.8414904295528232,,,Mawani total cargo is general plus dry bulk plus liquid bulk and excludes containers
+Saudi ports (Mawani),tonnes_noncontainer,Feb 2026,2026-02-01,2026-02-28,18150103,13784073,0.7594487480318982,,,Mawani total cargo is general plus dry bulk plus liquid bulk and excludes containers
+Saudi ports (Mawani),tonnes_noncontainer,Apr 2025,2025-04-01,2025-04-30,22213709,17076076,0.7687179119884933,,,Mawani total cargo is general plus dry bulk plus liquid bulk and excludes containers
+Saudi ports (Mawani),tonnes_noncontainer,Apr 2026,2026-04-01,2026-04-30,14532970,18573725,1.2780405519312295,,,Mawani total cargo is general plus dry bulk plus liquid bulk and excludes containers
+Saudi ports (Mawani),tonnes_noncontainer,Jul 2025,2025-07-01,2025-07-31,21180445,17602140,0.831056193578558,,,Mawani total cargo is general plus dry bulk plus liquid bulk and excludes containers; the July 2026 release quotes 14.85m t for July 2025 instead
+Saudi ports (Mawani),tonnes_noncontainer,Jul 2026,2026-07-01,2026-07-31,8490000,21549756,2.538251590106007,,,Mawani total cargo is general plus dry bulk plus liquid bulk and excludes containers
+Saudi ports (Mawani),tonnes_liquid_bulk,Feb 2026,2026-02-01,2026-02-28,13401013,8766724,0.6541836799949377,,,
+Saudi ports (Mawani),tonnes_liquid_bulk,Jul 2025,2025-07-01,2025-07-31,16622302,12463985,0.7498350709787369,,,
+Saudi ports (Mawani),tonnes_liquid_bulk,Jul 2026,2026-07-01,2026-07-31,4840000,18694188,3.8624355371900827,,,
+Saudi ports (Mawani),teu,2025,2025-01-01,2025-12-31,8317235,66533597,,7.999485045210338,3011.3088341781317,
+Saudi ports (Mawani),teu,Jan 2025,2025-01-01,2025-01-31,723571,6457966,,8.925131051410297,2751.2205323193916,
+Saudi ports (Mawani),teu,Jan 2026,2026-01-01,2026-01-31,738111,6561063,,8.888992306035272,2849.8494208494208,
+Saudi ports (Mawani),teu,Feb 2025,2025-02-01,2025-02-28,552484,5519774,,9.990830503688795,2455.4844444444443,
+Saudi ports (Mawani),teu,Feb 2026,2026-02-01,2026-02-28,667882,5607187,,8.395475548075858,2942.2114537444936,
+Saudi ports (Mawani),teu,Jul 2025,2025-07-01,2025-07-31,722502,5538835,,7.66618639117954,3211.12,
+Saudi ports (Mawani),teu,Jul 2026,2026-07-01,2026-07-31,597737,3227100,,5.39886271052319,4528.310606060606,
+Qatar ports (Mwani Qatar),vessels_total,2025,2025-01-01,2025-12-31,3019,1258,0.4166942696257039,,,Hamad and Ruwais on the PortWatch side; Old Doha Port is in the official count but PortWatch Doha-Umm Said also covers Mesaieed so it is left out
+Qatar ports (Mwani Qatar),vessels_total,Feb 2026,2026-02-01,2026-02-28,237,97,0.4092827004219409,,,
+Qatar ports (Mwani Qatar),vessels_total,H1 2026,2026-01-01,2026-06-30,866,338,0.3903002309468822,,,
+Qatar ports (Mwani Qatar),vessels_total,Jul 2026,2026-07-01,2026-07-31,118,49,0.4152542372881356,,,
+Qatar ports (Mwani Qatar),teu,2025,2025-01-01,2025-12-31,1460000,4731675,,3.2408732876712327,1752.7010804321728,Approximate
+Qatar ports (Mwani Qatar),teu,H1 2026,2026-01-01,2026-06-30,493105,957106,,1.9409780878311922,2293.5116279069766,
+Qatar ports (Mwani Qatar),teu,Jul 2026,2026-07-01,2026-07-31,51933,152651,,2.9393834363506826,1731.1,
+Jebel Ali (DP World),teu,Q2 2025,2025-04-01,2025-06-30,3800000,44701835,,11.763640789473683,2980.392156862745,
+Jebel Ali (DP World),teu,Q2 2026,2026-04-01,2026-06-30,374000,4066852,,10.873935828877006,3740.0,
+Nhava Sheva (JNPA),vessels_container,FY24-25,2024-04-01,2025-03-31,3101,3012,0.9712995807803935,,,Sum of container vessels across the terminals
+Nhava Sheva (JNPA),vessels_container,FY25-26,2025-04-01,2026-03-31,3295,1730,0.5250379362670713,,,Falls inside the PortWatch call count gap
+Nhava Sheva (JNPA),tonnes_total,FY24-25,2024-04-01,2025-03-31,92120000,153087928,1.6618316109422493,,,
+Nhava Sheva (JNPA),tonnes_total,FY25-26,2025-04-01,2026-03-31,102010000,137773441,1.350587599254975,,,
+Nhava Sheva (JNPA),tonnes_total,Sep 2026,2026-09-01,2026-09-30,9900000,15024420,1.5176181818181818,,,
+Nhava Sheva (JNPA),teu,FY24-25,2024-04-01,2025-03-31,7301000,83933900,,11.496219695932064,2423.9707835325366,
+Nhava Sheva (JNPA),teu,FY25-26,2025-04-01,2026-03-31,8173276,92462646,,11.312801133841559,4724.436994219654,
+Nhava Sheva (JNPA),teu,Sep 2026,2026-09-01,2026-09-30,834697,9167969,,10.983589254543864,3507.13025210084,
+Karachi (KPT),vessels_container,FY24-25,2024-07-01,2025-06-30,1093,730,0.6678865507776761,,,
+Karachi (KPT),vessels_total,FY24-25,2024-07-01,2025-06-30,1763,1300,0.737379466817924,,,Container plus dry bulk plus liquid bulk ships only
+Karachi (KPT),vessels_total,FY25-26,2025-07-01,2026-06-13,2003,1110,0.5541687468796804,,,All ship calls
+Karachi (KPT),tonnes_total,FY24-25,2024-07-01,2025-06-30,53951000,20794246,0.385428370187763,,,
+Karachi (KPT),teu,FY24-25,2024-07-01,2025-06-30,2651000,6288438,,2.3721003394945304,3631.5068493150684,
+Colombo (SLPA),vessels_total,H1 2025,2025-01-01,2025-06-30,2016,2044,1.0138888888888888,,,
+Colombo (SLPA),vessels_total,H1 2026,2026-01-01,2026-06-30,2066,2057,0.9956437560503388,,,
+Colombo (SLPA),vessels_container,H1 2025,2025-01-01,2025-06-30,1782,1685,0.9455667789001122,,,
+Colombo (SLPA),vessels_container,H1 2026,2026-01-01,2026-06-30,1797,1682,0.9360044518642181,,,
+Colombo (SLPA),tonnes_total,Jan to Oct 2025,2025-01-01,2025-10-31,105000000,25712412,0.2448801142857143,,,Approximate
+Colombo (SLPA),teu,H1 2025,2025-01-01,2025-06-30,3972053,12119811,,3.0512712191906806,2357.301483679525,
+Colombo (SLPA),teu,H1 2026,2026-01-01,2026-06-30,4444034,11796535,,2.6544655148903002,2642.1129607609987,
+Salalah,teu,H1 2025,2025-01-01,2025-06-30,2030000,24367561,,12.003724630541871,4634.703196347032,
+Salalah,teu,H1 2026,2026-01-01,2026-06-30,2330000,23981082,,10.292309871244635,5200.892857142857,

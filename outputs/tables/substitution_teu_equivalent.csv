@@ -1,0 +1,19 @@
+phase,group,effect_container_kt_per_day,tonnes_per_teu_used,ratio_basis,effect_teu_per_day,share_of_uae_loss_tonnes,share_of_uae_loss_teu_equivalent
+closure,all_outside_ex_red_sea,,,sum,,0.062,0.083
+closure,colombo,-2.62,3.05,"Colombo, H1 2025",-860.0,-0.005,-0.019
+closure,india_vs2024,24.19,11.5,"Nhava Sheva, FY24-25",2104.0,0.045,0.046
+closure,oman_outside,-8.59,12.0,"Salalah, H1 2025",-716.0,-0.016,-0.016
+closure,pakistan,4.63,2.37,"Karachi, FY24-25",1951.0,0.009,0.042
+closure,uae_east_outside,15.94,11.76,"no official TEU found, Jebel Ali ratio used (no adjustment)",1355.0,0.029,0.029
+mou,all_outside_ex_red_sea,,,sum,,0.093,0.194
+mou,colombo,-2.15,3.05,"Colombo, H1 2025",-705.0,-0.005,-0.018
+mou,india_vs2024,46.65,11.5,"Nhava Sheva, FY24-25",4058.0,0.103,0.105
+mou,oman_outside,-37.83,12.0,"Salalah, H1 2025",-3151.0,-0.083,-0.082
+mou,pakistan,12.68,2.37,"Karachi, FY24-25",5346.0,0.028,0.139
+mou,uae_east_outside,22.9,11.76,"no official TEU found, Jebel Ali ratio used (no adjustment)",1947.0,0.05,0.05
+renewed,all_outside_ex_red_sea,,,sum,,0.204,0.199
+renewed,colombo,-9.3,3.05,"Colombo, H1 2025",-3048.0,-0.018,-0.071
+renewed,india_vs2024,49.45,11.5,"Nhava Sheva, FY24-25",4301.0,0.098,0.1
+renewed,oman_outside,25.81,12.0,"Salalah, H1 2025",2150.0,0.051,0.05
+renewed,pakistan,5.91,2.37,"Karachi, FY24-25",2490.0,0.012,0.058
+renewed,uae_east_outside,31.67,11.76,"no official TEU found, Jebel Ali ratio used (no adjustment)",2692.0,0.063,0.063
