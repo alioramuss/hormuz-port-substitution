@@ -1,0 +1,20 @@
+port_or_operator,period,official_yoy_pct,portwatch_calls_2026,portwatch_calls_2025,portwatch_calls_yoy_pct,portwatch_tonnes_2026,portwatch_tonnes_2025,portwatch_tonnes_yoy_pct,calls_verdict,tonnes_verdict,source,note
+Jebel Ali (DP World),Q1 2026,-30.5,798,1302,-38.70967741935484,33620.484,47087.365000000005,-28.599776181997033,close,close,DP World H1 2026 results via Seatrade Maritime and Semafor,
+Jebel Ali (DP World),Q2 2026,-90.1,100,1275,-92.15686274509804,4066.8520000000003,44701.835,-90.90227056674519,close,close,DP World H1 2026 results via Seatrade Maritime,
+AD Ports UAE container ports,Q2 2026,-65.0,148,632,-76.58227848101266,1285.8719999999998,5678.380999999999,-77.35495381518078,PortWatch too low,PortWatch too low,AD Ports Group Q2 2026 results,Includes Fujairah Terminals which AD Ports operates
+AD Ports UAE container ports,Q3 2026,-57.0,144,605,-76.19834710743801,1179.9869999999999,5659.411,-79.15000341908372,PortWatch too low,PortWatch too low,AD Ports Group Q3 2026 results,Includes Fujairah Terminals which AD Ports operates
+Saudi ports (Mawani),Jan 2026,2.0,259,263,-1.520912547528517,6561.063,6457.9659999999985,1.596431446062144,close,close,Mawani via Port Technology International,Mawani ports exclude King Abdullah Port
+Saudi ports (Mawani),Feb 2026,20.9,227,225,0.8888888888888888,5607.187000000001,5519.773999999999,1.5836336777556723,PortWatch too low,PortWatch too low,Mawani via TradeArabia,
+Saudi ports (Mawani),Apr 2026,-18.65,197,235,-16.170212765957448,5189.6849999999995,5585.747,-7.090582512956653,close,PortWatch too high,Mawani via Saudi Gazette,Reported in the April release; the article mixes March and April figures
+Saudi ports (Mawani),Jul 2026,-17.5,132,225,-41.333333333333336,3227.1,5538.834999999999,-41.736845383550865,PortWatch too low,PortWatch too low,Mawani via Arab News,Jeddah alone set a monthly record of 540107 TEU this month
+Saudi ports (Mawani),Oct 2026,14.0,37,227,-83.70044052863436,578.875,5383.0160000000005,-89.24627012069071,PortWatch too low,PortWatch too low,Mawani via Saudi Gazette,Jeddah set a monthly record of 582900 TEU this month
+Nhava Sheva (JNPA),Jan-Jun 2026,13.6,988,1481,-33.28831870357866,50093.441,43842.822,14.256881092188816,PortWatch too low,close,JNPA via Indian Transport & Logistics News,
+Nhava Sheva (JNPA),Sep 2026,28.6,238,112,112.5,9167.969000000001,7478.965,22.58339222071504,PortWatch too high,close,JNPA performance report,
+Nhava Sheva (JNPA),Oct 2026,27.05,244,118,106.77966101694915,9293.972,7645.97,21.553864323297102,PortWatch too high,close,JNPA via Maritime Gateway,
+Mundra (Adani Ports),Sep 2026,15.0,211,121,74.3801652892562,2169.53,1317.642,64.65246250498998,PortWatch too high,PortWatch too high,Adani Ports monthly update,Company-wide container growth; Mundra is the largest part
+Mundra (Adani Ports),Oct 2026,21.0,237,121,95.86776859504133,2175.097,1256.671,73.08404506827962,PortWatch too high,PortWatch too high,Adani Ports monthly update,Company-wide container growth; Mundra handled a record 859000 TEU
+Salalah,Jan-Jun 2026,15.0,448,438,2.2831050228310503,23981.082000000002,24367.560999999998,-1.586038914604526,PortWatch too low,PortWatch too low,Salalah Port Services H1 2026 via Zawya,
+Salalah,Jul-Sep 2026,23.0,286,261,9.578544061302683,15309.366000000002,13971.139000000001,9.578510384872706,PortWatch too low,PortWatch too low,Derived from 9M 2026 3.8m TEU (+18%) minus H1,Derived figure
+Sohar,Jan-Jun 2026,40.0,253,284,-10.915492957746478,1799.508,1372.172,31.14303454668948,PortWatch too low,close,Oman Observer and The Maritime Standard,
+Colombo,Jan-Apr 2026,13.9,1129,1129,0.0,7918.129999999999,7823.873,1.2047358130685355,PortWatch too low,PortWatch too low,SLPA via Ada Derana,
+Colombo,Jan-Jun 2026,11.9,1682,1685,-0.17804154302670624,11796.535,12119.811000000002,-2.667335323958448,PortWatch too low,PortWatch too low,SLPA via Ada Derana and Daily FT,

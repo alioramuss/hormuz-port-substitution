@@ -388,14 +388,13 @@ def fig_where_cargo_went(eff25, eff24, phase="renewed"):
     rows = [
         ("Fujairah + Khor Fakkan", eff25, "uae_east_outside"),
         ("Oman ports", eff25, "oman_outside"),
-        ("Saudi Red Sea ports", eff25, "saudi_red_sea"),
         ("India (vs 2024)", eff24, "india"),
         ("Pakistan", eff25, "pakistan"),
         ("Colombo", eff25, "colombo"),
     ]
     sel = lambda e, g: e[(e["group"] == g) & (e["metric"] == "container_kt") & (e["phase"] == phase)].iloc[0]
     lost = sel(eff25, "uae_core_inside")["effect"] + sel(eff25, "uae_other_inside")["effect"]
-    fig, ax = plt.subplots(figsize=(9, 4.2))
+    fig, ax = plt.subplots(figsize=(9, 4.4))
     for i, (label, e, g) in enumerate(rows):
         r = sel(e, g)
         ax.plot([r["ci_low"], r["ci_high"]], [i, i], color=BLUE, lw=2.5, alpha=0.5)
@@ -414,9 +413,11 @@ def fig_where_cargo_went(eff25, eff24, phase="renewed"):
     ax.set_title(f"Where did the container cargo go? {label}, 8 Jul to 13 Nov 2026\n"
                  f"(UAE ports inside the strait lost about {-lost:.0f} thousand tonnes a day)",
                  fontsize=10.5, color=INK, loc="left")
-    fig.text(0.01, 0.01, "Source: IMF PortWatch. Dots: mean weekly effect, bars: 95% CI. India compared with 2024 "
-             "because of a PortWatch data gap at Indian ports in 2025.", fontsize=7.2, color=MUTED)
-    fig.tight_layout(rect=(0, 0.04, 1, 1))
+    fig.text(0.01, 0.01, "Source: IMF PortWatch. Dots: mean weekly effect, bars: 95% CI. India compared with 2024 because of a "
+             "PortWatch data gap in 2025. Saudi Red Sea left out: PortWatch shows a collapse\nbut official figures show record "
+             "volumes at Jeddah (likely ships switching off AIS). Official figures also show more growth at Oman and Colombo "
+             "than PortWatch does.", fontsize=7, color=MUTED)
+    fig.tight_layout(rect=(0, 0.07, 1, 1))
     fig.savefig(OUT_F / "where_container_cargo_went.png", dpi=160)
     plt.close(fig)
 
